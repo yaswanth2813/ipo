@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>IPO Profit Calculator</title>
 
   <style>
@@ -10,35 +11,106 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --heading: #172554;
+      --text: #172033;
+      --muted: #64748b;
+      --border: #dbe3ef;
+      --green: #15803d;
+      --red: #b91c1c;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #eef2ff, #f8fafc);
-      color: #172033;
-      padding: 20px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 32%),
+        radial-gradient(circle at bottom right, #e0e7ff 0, transparent 30%),
+        #f8fafc;
     }
 
-    .container {
-      width: 100%;
+    .app {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      padding: 28px 20px;
+    }
+
+    .background-orb {
+      position: fixed;
+      z-index: 0;
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      opacity: 0.35;
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .orb-one {
+      top: 8%;
+      left: -110px;
+      background: #93c5fd;
+    }
+
+    .orb-two {
+      right: -110px;
+      bottom: 8%;
+      background: #c4b5fd;
+    }
+
+    .header,
+    .calculator,
+    footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
       max-width: 1100px;
-      margin: auto;
-    }
-
-    header {
+      margin: 15px auto 28px;
       text-align: center;
-      margin: 25px 0;
+      opacity: 0;
+      transform: translateY(-30px);
     }
 
-    header h1 {
-      color: #172554;
+    .header.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity 700ms ease,
+        transform 700ms ease;
+    }
+
+    .logo {
+      width: 62px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      border-radius: 18px;
+      color: white;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.28);
+    }
+
+    .header h1 {
+      color: var(--heading);
       font-size: 32px;
       margin-bottom: 8px;
     }
 
-    header p {
-      color: #64748b;
+    .header p {
+      color: var(--muted);
       font-size: 15px;
     }
 
@@ -46,49 +118,89 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 22px;
-      background: white;
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
       padding: 24px;
-      border-radius: 18px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.13);
+      backdrop-filter: blur(15px);
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
+    }
+
+    .calculator.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity 700ms 180ms ease,
+        transform 700ms 180ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .card {
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
       padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.88);
+      opacity: 0;
+      transform: translateY(25px) scale(0.97);
+    }
+
+    .card.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity 600ms ease,
+        transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card:nth-child(2) {
+      transition-delay: 150ms;
     }
 
     .card h2 {
+      margin-bottom: 20px;
       color: #1e3a8a;
       font-size: 21px;
-      margin-bottom: 20px;
     }
 
     .input-group {
-      margin-bottom: 17px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
-      color: #334155;
-      font-weight: bold;
       margin-bottom: 7px;
+      color: #334155;
       font-size: 14px;
+      font-weight: bold;
     }
 
     input {
       width: 100%;
       padding: 12px;
-      font-size: 16px;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 9px;
       outline: none;
-      transition: 0.2s;
+      color: var(--text);
+      background: white;
+      font-size: 16px;
+      transition:
+        border-color 200ms ease,
+        box-shadow 200ms ease,
+        transform 200ms ease;
     }
 
     input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      transform: scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    input::placeholder {
+      color: #94a3b8;
     }
 
     .button-row {
@@ -98,27 +210,68 @@
     }
 
     button {
-      border: none;
-      padding: 12px 18px;
-      border-radius: 8px;
+      border: 0;
+      border-radius: 9px;
       cursor: pointer;
       font-size: 15px;
       font-weight: bold;
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.97);
     }
 
     .calculate-btn {
-      background: #2563eb;
-      color: white;
       flex: 1;
+      padding: 13px 18px;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
     }
 
     .calculate-btn:hover {
-      background: #1d4ed8;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.3);
+      background: linear-gradient(135deg, #1d4ed8, #4338ca);
     }
 
     .reset-btn {
-      background: #e2e8f0;
+      padding: 13px 18px;
       color: #334155;
+      background: #e2e8f0;
+    }
+
+    .reset-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .error-message {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: var(--red);
+      background: #fef2f2;
+      font-size: 13px;
+      animation: errorIn 300ms ease forwards;
+    }
+
+    @keyframes errorIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .result-grid {
@@ -128,64 +281,111 @@
     }
 
     .result-box {
-      background: #f8fafc;
-      border-radius: 10px;
       padding: 15px;
-      border-left: 4px solid #2563eb;
+      border-left: 4px solid var(--primary);
+      border-radius: 10px;
+      background: #f8fafc;
+      cursor: default;
+      opacity: 0;
+      transform: translateY(18px) scale(0.94);
+      transition:
+        opacity 450ms ease,
+        transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 200ms ease;
+    }
+
+    .result-box.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .result-box:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
     }
 
     .result-box span {
       display: block;
-      color: #64748b;
-      font-size: 13px;
       margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .result-box strong {
-      font-size: 20px;
-      color: #172033;
+      color: var(--text);
+      font-size: 19px;
+      word-break: break-word;
     }
 
-    .profit {
-      background: #ecfdf5;
+    .result-box.profit {
       border-left-color: #16a34a;
+      background: #ecfdf5;
     }
 
-    .profit strong {
-      color: #15803d;
+    .result-box.profit strong {
+      color: var(--green);
     }
 
-    .loss {
-      background: #fef2f2;
+    .result-box.loss {
       border-left-color: #dc2626;
+      background: #fef2f2;
     }
 
-    .loss strong {
-      color: #b91c1c;
+    .result-box.loss strong {
+      color: var(--red);
+    }
+
+    .result-box.pulse {
+      animation: profitPulse 600ms ease;
+    }
+
+    @keyframes profitPulse {
+      0% {
+        transform: scale(1);
+      }
+
+      45% {
+        transform: scale(1.08);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     .formula {
       margin-top: 20px;
-      background: #eff6ff;
-      color: #1e40af;
       padding: 14px;
-      border-radius: 9px;
+      border-radius: 10px;
+      color: #1e40af;
+      background: #eff6ff;
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
+      transition:
+        background 400ms ease,
+        color 400ms ease;
     }
 
-    .note {
-      margin-top: 17px;
-      color: #64748b;
-      font-size: 12px;
-      line-height: 1.5;
+    .formula.success {
+      color: #166534;
+      background: #ecfdf5;
     }
 
     footer {
-      text-align: center;
-      color: #64748b;
+      margin: 23px 0 0;
+      color: var(--muted);
       font-size: 13px;
-      margin: 22px 0;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    footer.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity 700ms 400ms ease,
+        transform 700ms 400ms ease;
     }
 
     @media (max-width: 760px) {
@@ -194,12 +394,8 @@
         padding: 15px;
       }
 
-      header h1 {
-        font-size: 26px;
-      }
-
-      .result-grid {
-        grid-template-columns: 1fr 1fr;
+      .header h1 {
+        font-size: 27px;
       }
     }
 
@@ -211,87 +407,129 @@
       .button-row {
         flex-direction: column;
       }
+
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <header>
+  <div class="app">
+    <div class="background-orb orb-one"></div>
+    <div class="background-orb orb-two"></div>
+
+    <header class="header">
+      <div class="logo">IPO</div>
+
       <h1>IPO Profit Calculator</h1>
-      <p>Calculate IPO investment, expected listing price, profit and return</p>
+
+      <p>
+        Calculate investment, expected listing price, profit and return
+      </p>
     </header>
 
     <main class="calculator">
-      <section class="card">
+      <section class="card input-card">
         <h2>IPO Details</h2>
 
-        <div class="input-group">
-          <label for="issuePrice">Issue Price Per Share (₹)</label>
-          <input
-            type="number"
-            id="issuePrice"
-            placeholder="Example: 500"
-            min="0"
-            step="0.01"
-          />
-        </div>
+        <form id="ipoForm">
+          <div class="input-group">
+            <label for="issuePrice">
+              Issue Price Per Share ₹
+            </label>
 
-        <div class="input-group">
-          <label for="lotSize">Lot Size (Shares)</label>
-          <input
-            type="number"
-            id="lotSize"
-            placeholder="Example: 30"
-            min="1"
-            step="1"
-          />
-        </div>
+            <input
+              type="number"
+              id="issuePrice"
+              placeholder="Example: 500"
+              min="0"
+              step="0.01"
+            />
+          </div>
 
-        <div class="input-group">
-          <label for="lotsApplied">Number of Lots</label>
-          <input
-            type="number"
-            id="lotsApplied"
-            value="1"
-            min="1"
-            step="1"
-          />
-        </div>
+          <div class="input-group">
+            <label for="lotSize">
+              Lot Size Shares
+            </label>
 
-        <div class="input-group">
-          <label for="listingPrice">Expected Listing Price Per Share (₹)</label>
-          <input
-            type="number"
-            id="listingPrice"
-            placeholder="Example: 650"
-            min="0"
-            step="0.01"
-          />
-        </div>
+            <input
+              type="number"
+              id="lotSize"
+              placeholder="Example: 30"
+              min="1"
+              step="1"
+            />
+          </div>
 
-        <div class="input-group">
-          <label for="gmp">GMP Per Share (Optional ₹)</label>
-          <input
-            type="number"
-            id="gmp"
-            placeholder="Example: 150"
-            step="0.01"
-          />
-        </div>
+          <div class="input-group">
+            <label for="lotsApplied">
+              Number of Lots
+            </label>
 
-        <div class="button-row">
-          <button class="calculate-btn" onclick="calculateIPO()">
-            Calculate Profit
-          </button>
+            <input
+              type="number"
+              id="lotsApplied"
+              value="1"
+              min="1"
+              step="1"
+            />
+          </div>
 
-          <button class="reset-btn" onclick="resetCalculator()">
-            Reset
-          </button>
-        </div>
+          <div class="input-group">
+            <label for="listingPrice">
+              Expected Listing Price ₹
+            </label>
+
+            <input
+              type="number"
+              id="listingPrice"
+              placeholder="Example: 650"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="gmp">
+              GMP Per Share ₹ Optional
+            </label>
+
+            <input
+              type="number"
+              id="gmp"
+              placeholder="Example: 150"
+              step="0.01"
+            />
+          </div>
+
+          <div id="errorContainer"></div>
+
+          <div class="button-row">
+            <button class="calculate-btn" type="submit">
+              Calculate Profit
+            </button>
+
+            <button class="reset-btn" type="button" id="resetButton">
+              Reset
+            </button>
+          </div>
+        </form>
       </section>
 
-      <section class="card">
+      <section class="card result-card">
         <h2>Calculation Results</h2>
 
         <div class="result-grid">
@@ -336,27 +574,39 @@
           </div>
         </div>
 
-        <div class="formula">
-          <strong>Formula:</strong><br />
-          Total Shares = Lot Size × Number of Lots<br />
-          Total Investment = Issue Price × Total Shares<br />
-          Profit/Loss = (Listing Price − Issue Price) × Total Shares<br />
+        <div class="formula" id="formulaBox">
+          <strong>Formula:</strong>
+          <br />
+          Total Shares = Lot Size × Number of Lots
+          <br />
+          Total Investment = Issue Price × Total Shares
+          <br />
+          Profit/Loss = Listing Price − Issue Price
+          <br />
           ROI = Profit/Loss ÷ Total Investment × 100
         </div>
 
         <p class="note">
           This calculator provides an estimate only. GMP and expected listing
-          prices are not guaranteed, and actual market prices may differ.
+          prices are not guaranteed.
         </p>
       </section>
     </main>
 
     <footer>
-      IPO Profit Calculator | For educational purposes only
+      IPO Profit Calculator | Educational purposes only
     </footer>
   </div>
 
   <script>
+    const form = document.getElementById("ipoForm");
+    const resetButton = document.getElementById("resetButton");
+
+    const resultBoxes = document.querySelectorAll(".result-box");
+    const totalProfitBox = document.getElementById("totalProfitBox");
+    const formulaBox = document.getElementById("formulaBox");
+    const errorContainer = document.getElementById("errorContainer");
+
     function formatCurrency(value) {
       return new Intl.NumberFormat("en-IN", {
         style: "currency",
@@ -369,26 +619,111 @@
       return parseFloat(document.getElementById(id).value) || 0;
     }
 
+    function updateResult(id, value) {
+      const element = document.getElementById(id);
+
+      element.animate(
+        [
+          {
+            opacity: 0,
+            transform: "translateY(8px) scale(0.94)"
+          },
+          {
+            opacity: 1,
+            transform: "translateY(0) scale(1)"
+          }
+        ],
+        {
+          duration: 450,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+        }
+      );
+
+      element.textContent = value;
+    }
+
+    function showError(message) {
+      errorContainer.innerHTML = "";
+
+      const error = document.createElement("div");
+
+      error.className = "error-message";
+      error.textContent = message;
+
+      errorContainer.appendChild(error);
+    }
+
+    function removeError() {
+      errorContainer.innerHTML = "";
+    }
+
+    function shakeInputCard() {
+      const inputCard = document.querySelector(".input-card");
+
+      inputCard.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-9px)" },
+          { transform: "translateX(9px)" },
+          { transform: "translateX(-6px)" },
+          { transform: "translateX(6px)" },
+          { transform: "translateX(0)" }
+        ],
+        {
+          duration: 430,
+          easing: "ease-in-out"
+        }
+      );
+    }
+
+    function animateResultBoxes() {
+      resultBoxes.forEach((box, index) => {
+        box.classList.remove("show");
+
+        setTimeout(() => {
+          box.classList.add("show");
+        }, index * 75);
+      });
+
+      setTimeout(() => {
+        totalProfitBox.classList.remove("pulse");
+
+        void totalProfitBox.offsetWidth;
+
+        totalProfitBox.classList.add("pulse");
+      }, 750);
+    }
+
     function calculateIPO() {
       const issuePrice = getNumber("issuePrice");
       const lotSize = getNumber("lotSize");
       const lotsApplied = getNumber("lotsApplied");
-      const enteredListingPrice = getNumber("listingPrice");
+      const listingPriceInput = getNumber("listingPrice");
       const gmp = getNumber("gmp");
 
+      removeError();
+
       if (issuePrice <= 0 || lotSize <= 0 || lotsApplied <= 0) {
-        alert("Please enter a valid issue price, lot size and number of lots.");
+        showError(
+          "Please enter a valid issue price, lot size and number of lots."
+        );
+
+        shakeInputCard();
         return;
       }
 
-      let estimatedListingPrice = enteredListingPrice;
+      let estimatedListingPrice = listingPriceInput;
 
       if (estimatedListingPrice <= 0 && gmp !== 0) {
         estimatedListingPrice = issuePrice + gmp;
       }
 
       if (estimatedListingPrice <= 0) {
-        alert("Please enter either the expected listing price or GMP.");
+        showError(
+          "Please enter either the expected listing price or GMP."
+        );
+
+        shakeInputCard();
         return;
       }
 
@@ -400,31 +735,45 @@
       const roi = (totalProfit / totalInvestment) * 100;
       const finalValue = estimatedListingPrice * totalShares;
 
-      document.getElementById("totalShares").textContent =
-        totalShares.toLocaleString("en-IN");
+      updateResult(
+        "totalShares",
+        totalShares.toLocaleString("en-IN")
+      );
 
-      document.getElementById("totalInvestment").textContent =
-        formatCurrency(totalInvestment);
+      updateResult(
+        "totalInvestment",
+        formatCurrency(totalInvestment)
+      );
 
-      document.getElementById("estimatedListing").textContent =
-        formatCurrency(estimatedListingPrice);
+      updateResult(
+        "estimatedListing",
+        formatCurrency(estimatedListingPrice)
+      );
 
-      document.getElementById("profitPerShare").textContent =
-        formatCurrency(profitPerShare);
+      updateResult(
+        "profitPerShare",
+        formatCurrency(profitPerShare)
+      );
 
-      document.getElementById("profitPerLot").textContent =
-        formatCurrency(profitPerLot);
+      updateResult(
+        "profitPerLot",
+        formatCurrency(profitPerLot)
+      );
 
-      document.getElementById("totalProfit").textContent =
-        formatCurrency(totalProfit);
+      updateResult(
+        "totalProfit",
+        formatCurrency(totalProfit)
+      );
 
-      document.getElementById("roi").textContent =
-        roi.toFixed(2) + "%";
+      updateResult(
+        "roi",
+        roi.toFixed(2) + "%"
+      );
 
-      document.getElementById("finalValue").textContent =
-        formatCurrency(finalValue);
-
-      const totalProfitBox = document.getElementById("totalProfitBox");
+      updateResult(
+        "finalValue",
+        formatCurrency(finalValue)
+      );
 
       totalProfitBox.classList.remove("profit", "loss");
 
@@ -433,6 +782,10 @@
       } else if (totalProfit < 0) {
         totalProfitBox.classList.add("loss");
       }
+
+      formulaBox.classList.add("success");
+
+      animateResultBoxes();
     }
 
     function resetCalculator() {
@@ -442,19 +795,85 @@
       document.getElementById("listingPrice").value = "";
       document.getElementById("gmp").value = "";
 
-      document.getElementById("totalShares").textContent = "0";
-      document.getElementById("totalInvestment").textContent = "₹0";
-      document.getElementById("estimatedListing").textContent = "₹0";
-      document.getElementById("profitPerShare").textContent = "₹0";
-      document.getElementById("profitPerLot").textContent = "₹0";
-      document.getElementById("totalProfit").textContent = "₹0";
-      document.getElementById("roi").textContent = "0%";
-      document.getElementById("finalValue").textContent = "₹0";
+      removeError();
 
-      document
-        .getElementById("totalProfitBox")
-        .classList.remove("profit", "loss");
+      updateResult("totalShares", "0");
+      updateResult("totalInvestment", "₹0");
+      updateResult("estimatedListing", "₹0");
+      updateResult("profitPerShare", "₹0");
+      updateResult("profitPerLot", "₹0");
+      updateResult("totalProfit", "₹0");
+      updateResult("roi", "0%");
+      updateResult("finalValue", "₹0");
+
+      totalProfitBox.classList.remove("profit", "loss", "pulse");
+      formulaBox.classList.remove("success");
+
+      resultBoxes.forEach((box, index) => {
+        box.classList.remove("show");
+
+        setTimeout(() => {
+          box.classList.add("show");
+        }, index * 55);
+      });
     }
-  </script>
-</body>
-</html>
+
+    function startPageAnimations() {
+      document.querySelector(".header").classList.add("is-visible");
+      document.querySelector(".calculator").classList.add("is-visible");
+      document.querySelector("footer").classList.add("is-visible");
+
+      document.querySelectorAll(".card").forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add("is-visible");
+        }, 280 + index * 150);
+      });
+
+      animateBackground();
+    }
+
+    function animateBackground() {
+      const orbOne = document.querySelector(".orb-one");
+      const orbTwo = document.querySelector(".orb-two");
+
+      orbOne.animate(
+        [
+          {
+            transform: "translate(0, 0) scale(1)"
+          },
+          {
+            transform: "translate(45px, -25px) scale(1.15)"
+          },
+          {
+            transform: "translate(0, 0) scale(1)"
+          }
+        ],
+        {
+          duration: 7000,
+          iterations: Infinity,
+          easing: "ease-in-out"
+        }
+      );
+
+      orbTwo.animate(
+        [
+          {
+            transform: "translate(0, 0) scale(1)"
+          },
+          {
+            transform: "translate(-40px, 25px) scale(1.2)"
+          },
+          {
+            transform: "translate(0, 0) scale(1)"
+          }
+        ],
+        {
+          duration: 8000,
+          iterations: Infinity,
+          easing: "ease-in-out"
+        }
+      );
+    }
+
+    form.addEventListener("submit", function (event) {
+   
