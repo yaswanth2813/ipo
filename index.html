@@ -876,4 +876,23 @@
     }
 
     form.addEventListener("submit", function (event) {
-   
+      event.preventDefault();
+      calculateIPO();
+    });
+
+    resetButton.addEventListener("click", resetCalculator);
+
+    window.addEventListener("DOMContentLoaded", function () {
+      startPageAnimations();
+
+      setTimeout(() => {
+        resultBoxes.forEach((box, index) => {
+          setTimeout(() => {
+            box.classList.add("show");
+          }, index * 70);
+        });
+      }, 850);
+    });
+  </script>
+</body>
+</html>
