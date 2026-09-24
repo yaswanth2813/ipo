@@ -1,1 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO Profit Calculator</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      color: #172033;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      margin: 25px 0;
+    }
+
+    header h1 {
+      color: #172554;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1);
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .card h2 {
+      color: #1e3a8a;
+      font-size: 21px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      color: #334155;
+      font-weight: bold;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .calculate-btn {
+      background: #2563eb;
+      color: white;
+      flex: 1;
+    }
+
+    .calculate-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .reset-btn {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .result-box {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 15px;
+      border-left: 4px solid #2563eb;
+    }
+
+    .result-box span {
+      display: block;
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .result-box strong {
+      font-size: 20px;
+      color: #172033;
+    }
+
+    .profit {
+      background: #ecfdf5;
+      border-left-color: #16a34a;
+    }
+
+    .profit strong {
+      color: #15803d;
+    }
+
+    .loss {
+      background: #fef2f2;
+      border-left-color: #dc2626;
+    }
+
+    .loss strong {
+      color: #b91c1c;
+    }
+
+    .formula {
+      margin-top: 20px;
+      background: #eff6ff;
+      color: #1e40af;
+      padding: 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .note {
+      margin-top: 17px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      margin: 22px 0;
+    }
+
+    @media (max-width: 760px) {
+      .calculator {
+        grid-template-columns: 1fr;
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 26px;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>IPO Profit Calculator</h1>
+      <p>Calculate IPO investment, expected listing price, profit and return</p>
+    </header>
+
+    <main class="calculator">
+      <section class="card">
+        <h2>IPO Details</h2>
+
+        <div class="input-group">
+          <label for="issuePrice">Issue Price Per Share (₹)</label>
+          <input
+            type="number"
+            id="issuePrice"
+            placeholder="Example: 500"
+            min="0"
+            step="0.01"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="lotSize">Lot Size (Shares)</label>
+          <input
+            type="number"
+            id="lotSize"
+            placeholder="Example: 30"
+            min="1"
+            step="1"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="lotsApplied">Number of Lots</label>
+          <input
+            type="number"
+            id="lotsApplied"
+            value="1"
+            min="1"
+            step="1"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="listingPrice">Expected Listing Price Per Share (₹)</label>
+          <input
+            type="number"
+            id="listingPrice"
+            placeholder="Example: 650"
+            min="0"
+            step="0.01"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="gmp">GMP Per Share (Optional ₹)</label>
+          <input
+            type="number"
+            id="gmp"
+            placeholder="Example: 150"
+            step="0.01"
+          />
+        </div>
+
+        <div class="button-row">
+          <button class="calculate-btn" onclick="calculateIPO()">
+            Calculate Profit
+          </button>
+
+          <button class="reset-btn" onclick="resetCalculator()">
+            Reset
+          </button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Calculation Results</h2>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <span>Total Shares</span>
+            <strong id="totalShares">0</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Total Investment</span>
+            <strong id="totalInvestment">₹0</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Estimated Listing Price</span>
+            <strong id="estimatedListing">₹0</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Profit Per Share</span>
+            <strong id="profitPerShare">₹0</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Profit Per Lot</span>
+            <strong id="profitPerLot">₹0</strong>
+          </div>
+
+          <div class="result-box" id="totalProfitBox">
+            <span>Total Profit / Loss</span>
+            <strong id="totalProfit">₹0</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Return on Investment</span>
+            <strong id="roi">0%</strong>
+          </div>
+
+          <div class="result-box">
+            <span>Final Value</span>
+            <strong id="finalValue">₹0</strong>
+          </div>
+        </div>
+
+        <div class="formula">
+          <strong>Formula:</strong><br />
+          Total Shares = Lot Size × Number of Lots<br />
+          Total Investment = Issue Price × Total Shares<br />
+          Profit/Loss = (Listing Price − Issue Price) × Total Shares<br />
+          ROI = Profit/Loss ÷ Total Investment × 100
+        </div>
+
+        <p class="note">
+          This calculator provides an estimate only. GMP and expected listing
+          prices are not guaranteed, and actual market prices may differ.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      IPO Profit Calculator | For educational purposes only
+    </footer>
+  </div>
+
+  <script>
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function getNumber(id) {
+      return parseFloat(document.getElementById(id).value) || 0;
+    }
+
+    function calculateIPO() {
+      const issuePrice = getNumber("issuePrice");
+      const lotSize = getNumber("lotSize");
+      const lotsApplied = getNumber("lotsApplied");
+      const enteredListingPrice = getNumber("listingPrice");
+      const gmp = getNumber("gmp");
+
+      if (issuePrice <= 0 || lotSize <= 0 || lotsApplied <= 0) {
+        alert("Please enter a valid issue price, lot size and number of lots.");
+        return;
+      }
+
+      let estimatedListingPrice = enteredListingPrice;
+
+      if (estimatedListingPrice <= 0 && gmp !== 0) {
+        estimatedListingPrice = issuePrice + gmp;
+      }
+
+      if (estimatedListingPrice <= 0) {
+        alert("Please enter either the expected listing price or GMP.");
+        return;
+      }
+
+      const totalShares = lotSize * lotsApplied;
+      const totalInvestment = issuePrice * totalShares;
+      const profitPerShare = estimatedListingPrice - issuePrice;
+      const profitPerLot = profitPerShare * lotSize;
+      const totalProfit = profitPerShare * totalShares;
+      const roi = (totalProfit / totalInvestment) * 100;
+      const finalValue = estimatedListingPrice * totalShares;
+
+      document.getElementById("totalShares").textContent =
+        totalShares.toLocaleString("en-IN");
+
+      document.getElementById("totalInvestment").textContent =
+        formatCurrency(totalInvestment);
+
+      document.getElementById("estimatedListing").textContent =
+        formatCurrency(estimatedListingPrice);
+
+      document.getElementById("profitPerShare").textContent =
+        formatCurrency(profitPerShare);
+
+      document.getElementById("profitPerLot").textContent =
+        formatCurrency(profitPerLot);
+
+      document.getElementById("totalProfit").textContent =
+        formatCurrency(totalProfit);
+
+      document.getElementById("roi").textContent =
+        roi.toFixed(2) + "%";
+
+      document.getElementById("finalValue").textContent =
+        formatCurrency(finalValue);
+
+      const totalProfitBox = document.getElementById("totalProfitBox");
+
+      totalProfitBox.classList.remove("profit", "loss");
+
+      if (totalProfit > 0) {
+        totalProfitBox.classList.add("profit");
+      } else if (totalProfit < 0) {
+        totalProfitBox.classList.add("loss");
+      }
+    }
+
+    function resetCalculator() {
+      document.getElementById("issuePrice").value = "";
+      document.getElementById("lotSize").value = "";
+      document.getElementById("lotsApplied").value = "1";
+      document.getElementById("listingPrice").value = "";
+      document.getElementById("gmp").value = "";
+
+      document.getElementById("totalShares").textContent = "0";
+      document.getElementById("totalInvestment").textContent = "₹0";
+      document.getElementById("estimatedListing").textContent = "₹0";
+      document.getElementById("profitPerShare").textContent = "₹0";
+      document.getElementById("profitPerLot").textContent = "₹0";
+      document.getElementById("totalProfit").textContent = "₹0";
+      document.getElementById("roi").textContent = "0%";
+      document.getElementById("finalValue").textContent = "₹0";
+
+      document
+        .getElementById("totalProfitBox")
+        .classList.remove("profit", "loss");
+    }
+  </script>
+</body>
+</html>
